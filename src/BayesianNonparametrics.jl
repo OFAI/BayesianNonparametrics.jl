@@ -1,6 +1,6 @@
 module BayesianNonparametrics
 
-  using Distributions, Combinatorics, Clustering, ProgressMeter
+  using Distributions, Combinatorics, Clustering, ProgressMeter, StatsFuns
 
   include("common.jl")
   include("math.jl")
@@ -12,6 +12,7 @@ module BayesianNonparametrics
   include("inference.jl")
   include("models.jl")
   include("dpmm.jl")
+  include("hdp.jl")
   include("vipointestimate.jl")
 
 end # module

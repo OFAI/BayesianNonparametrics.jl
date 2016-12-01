@@ -16,7 +16,7 @@ abstract InitialisationType;
 abstract PosteriorInference;
 
 function init(X, model::ModelType, init::InitialisationType)
-  throw(ErrorException("Initialisation $(init) for $(model) is not available."))
+  throw(ErrorException("Initialisation $(typeof(init)) for $(typeof(model)) using $(typeof(X)) is not available."))
 end
 
 function extractpointestimate(B::AbstractModelBuffer)
@@ -31,7 +31,7 @@ function gibbs!(B::AbstractModelBuffer)
   throw(ErrorException("Gibbs sampling for $(typeof(B)) is not available."))
 end
 
-function slicesample!(B::AbstractModelBuffer)
+function slicesampling!(B::AbstractModelBuffer)
   throw(ErrorException("Slice sampling for $(typeof(B)) is not available."))
 end
 
@@ -40,5 +40,5 @@ function variationalbayes!(B::AbstractModelBuffer)
 end
 
 function train(B::AbstractModelBuffer, P::AbstractHyperparam, I::PosteriorInference)
-  throw(ErrorException("Posterior inference for $(typeof(B)) is not available."))
+  throw(ErrorException("Posterior inference for $(typeof(B)) with $(typeof(P)) and $(typeof(I)) is not available."))
 end

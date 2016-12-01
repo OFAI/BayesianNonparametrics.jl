@@ -51,6 +51,9 @@ type DPMBuffer <: AbstractModelBuffer
   # number of samples per cluster
   C::Array{Int}
 
+  # weights
+  π::Vector{Float64}
+
   # number of active cluster
   K::Int
 
@@ -64,7 +67,7 @@ type DPMBuffer <: AbstractModelBuffer
   alpha::Float64
 end
 
-function init{T <: Real}(X::AbstractMatrix{T}, model::DPM, init::KMeansInitialisation)
+function init{T <: Real}(X::AbstractArray{T}, model::DPM, init::KMeansInitialisation)
 
   (N, D) = size(X)
 
@@ -96,6 +99,14 @@ function init{T <: Real}(X::AbstractMatrix{T}, model::DPM, init::KMeansInitialis
     C[i] = sum(Z .== i)
   end
 
+  K = init.k
+  for k in sort(find(C .== 0), rev = true)
+    deleteat!(G, k)
+    Z[Z .> k] -= 1
+    deleteat!(C, k)
+    K -= 1
+  end
+
   return DPMBuffer(
     collect(1:N),
     D,
@@ -103,13 +114,14 @@ function init{T <: Real}(X::AbstractMatrix{T}, model::DPM, init::KMeansInitialis
     X,
     Z,
     C,
-    init.k,
+    rand(Dirichlet(C)),
+    K,
     G,
     model.H,
     model.α)
 end
 
-function init{T <: Real}(X::AbstractMatrix{T}, model::DPM, init::RandomInitialisation)
+function init{T <: Real}(X::AbstractArray{T}, model::DPM, init::RandomInitialisation)
 
   (N, D) = size(X)
 
@@ -139,6 +151,7 @@ function init{T <: Real}(X::AbstractMatrix{T}, model::DPM, init::RandomInitialis
     X,
     Z,
     C,
+    rand(Dirichlet(C)),
     init.k,
     G,
     model.H,
@@ -213,6 +226,8 @@ function gibbs!(B::DPMBuffer)
     B.Z[index] = k
   end
 
+  B.π = Float64[B.C[i] / (B.N + B.alpha - 1) for i in 1:B.K]
+
   B
 end
 
@@ -249,7 +264,76 @@ function sampleparameters!(B::DPMBuffer, P::DPMHyperparam)
 end
 
 function extractpointestimate(B::DPMBuffer)
-  model = DPMData(0.0, deepcopy(B.alpha), deepcopy(B.G), deepcopy(B.Z), map(i -> B.C[i] / (B.N + B.alpha - 1), 1:B.K))
+  model = DPMData(0.0, deepcopy(B.alpha), deepcopy(B.G), deepcopy(B.Z), copy(B.π))
   updateenergy!(model, B.X)
   model
+end
+
+function slicemap(i::Int, uu::Float64, ii::Int, π::Vector{Float64}, Zi::Int, Xi::AbstractArray,
+    G::Vector{ConjugatePostDistribution}, G0::ConjugatePostDistribution, K::Int)
+  if i == ii
+		ui = uu
+	else
+		ui = rand(Uniform(uu, π[Zi]))
+	end
+
+	di = find(π .>= ui)
+	p = [logpostpred(G[d], Xi)[1] for d in filter(d -> d <= K, di)]
+	if any(di .> K)
+		push!(p, logpostpred(G0, Xi)[1])
+	end
+	z = di[randomindex(exp(p - maximum(p)))]
+	(z, i)
+end
+
+function slicesampling!(B::DPMBuffer)
+	# sample global parameters
+	n = counts(B.Z, 1:B.K)
+	π = rand(Dirichlet(vcat(n, B.alpha)))
+	b = [rand(Beta(1, n[k])) for k in 1:B.K]
+	u = π[1:end-1].*b
+	(uu, kk) = findmin(u)
+	ii = rand(find(B.Z .== kk))
+
+	# collect slices
+	suffstat = @parallel (vcat) for i in 1:B.N
+		slicemap(i, uu, ii, π, B.Z[i], view(B.X, i, :), B.G, B.G0, B.K)
+	end
+
+	# update GMM
+	ki = 1
+	emptyIds = Int[]
+
+	for k in 1:B.K
+		stats = filter(sstat -> sstat[1] == k, suffstat)
+		if !isempty(stats)
+			ids = reduce(vcat, (sstat[2] for sstat in stats))
+			B.Z[ids] = ki
+			B.G[ki] = add(B.G0, B.X[ids,:])
+			ki += 1
+		else
+			push!(emptyIds, k)
+		end
+	end
+
+	# remove empty clusters
+	for eid in reverse(emptyIds)
+		deleteat!(B.G, eid)
+	end
+
+	B.K = B.K - length(emptyIds)
+
+	# add new components
+	stats = filter(sstat -> sstat[1] > B.K + length(emptyIds), suffstat)
+
+	if !isempty(stats)
+		ids = reduce(vcat, (sstat[2] for sstat in stats))
+		push!(B.G, add(B.G0, B.X[ids, :]))
+		B.Z[ids] = B.K + 1
+		B.K += 1
+	end
+
+  # update weights
+  n = counts(B.Z, 1:B.K)
+	B.π = rand(Dirichlet(n))
 end

@@ -22,6 +22,12 @@ function add!(d::MultivariateConjugatePostDistribution, X::AbstractMatrix)
 		end
 end
 
+function add!(d::UnivariateConjugatePostDistribution, X::AbstractMatrix)
+	(N,D) = size(X)
+	@assert D == 1
+	add!(d, vec(X))
+end
+
 function add!(d::UnivariateConjugatePostDistribution, X::AbstractVector)
 	@simd for i in 1:size(X, 1)
 		@inbounds add!(d, X[i])
@@ -48,7 +54,7 @@ function add!(d::ContinuousUnivariateConjugatePostDistribution, X::AbstractFloat
 	d.ssums += X^2
 end
 
-function add!(d::DirichletMultinomial, X::AbstractVector)
+function add!(d::DirichletMultinomial, X)
 
     # process samples
     Dmin = minimum(X)
@@ -106,6 +112,12 @@ function remove!(d::MultivariateConjugatePostDistribution, X::AbstractMatrix)
 		end
 end
 
+function remove!(d::UnivariateConjugatePostDistribution, X::AbstractMatrix)
+	(N,D) = size(X)
+	@assert D == 1
+	remove!(d, vec(X))
+end
+
 function remove!(d::UnivariateConjugatePostDistribution, X::AbstractVector)
 	@simd for i in 1:size(X, 1)
 		@inbounds remove!(d, X[i])
@@ -132,7 +144,7 @@ function remove!(d::GaussianDiagonal, X::AbstractVector)
 	end
 end
 
-function remove!(d::DirichletMultinomial, X::AbstractVector)
+function remove!(d::DirichletMultinomial, X)
 
     # process samples
     Dmin = minimum(X)
@@ -318,14 +330,14 @@ function logpostpred(d::DirichletMultinomial, x)
 		mi = nnz(xx)
 
 		if d.dirty
-			d.Z2 = lgamma(d.alpha0 + d.n)
-			d.Z3 = lgamma( d.alpha0/d.D + d.counts )
+			d.Z2 = lgamma(d.α0 + d.n)
+			d.Z3 = lgamma( d.α0/d.D + d.counts )
 			d.dirty = false
 		end
 
 	 l1 = lgamma(m + 1) - sum(lgamma(mi + 1))
-	 l2 = d.Z2 - lgamma(d.alpha0 + d.n + m)
-	 l3 = sum( lgamma( d.alpha0 / d.D + d.counts + xx ) - d.Z3 )
+	 l2 = d.Z2 - lgamma(d.α0 + d.n + m)
+	 l3 = sum( lgamma( d.α0 / d.D + d.counts + xx ) - d.Z3 )
 
 	 return [l1 + l2 + l3]
 end
@@ -344,15 +356,15 @@ function logpostpred(d::DirichletMultinomial, x::SparseVector{Int, Int})
    mi = nnz(x)
 
    if d.dirty
-      d.Z2 = lgamma(d.alpha0 + d.n)
-      d.Z3 = lgamma( d.alpha0/d.D + d.counts )
+      d.Z2 = lgamma(d.α0 + d.n)
+      d.Z3 = lgamma( d.α0/d.D + d.counts )
 
       d.dirty = false
    end
 
 	l1 = lgamma(m + 1) - sum(lgamma(mi + 1))
-	l2 = d.Z2 - lgamma(d.alpha0 + d.n + m)
-	l3 = sum( lgamma( d.alpha0 / d.D + d.counts + x ) - d.Z3 )
+	l2 = d.Z2 - lgamma(d.α0 + d.n + m)
+	l3 = sum( lgamma( d.α0 / d.D + d.counts + x ) - d.Z3 )
 
    return [l1 + l2 + l3]
 end
