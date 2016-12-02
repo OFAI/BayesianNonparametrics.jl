@@ -14,7 +14,7 @@ Installation
 You can clone the package into your running julia installation using
 
 ```julia
-Pkg.clone("git://example.com/path/to/Package.jl.git")
+Pkg.clone("https://github.com/OFAI/BayesianNonparametrics.jl.git")
 ```
 
 Documentation
