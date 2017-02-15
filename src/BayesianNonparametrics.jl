@@ -1,3 +1,5 @@
+__precompile__(true)
+
 module BayesianNonparametrics
 
   using Distributions, Combinatorics, Clustering, ProgressMeter, StatsFuns
