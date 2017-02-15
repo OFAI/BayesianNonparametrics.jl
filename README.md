@@ -9,12 +9,17 @@ BayesianNonparametrics.jl allows you to
 - fit multivariate or univariate distributions for discrete or continous data with conjugate priors
 - compute point estimtates of Dirichlet Process Mixtures posterior samples
 
+Requirements
+------------
+* julia version 0.5
+* packages listed in REQUIREMENTS file
+
 Installation
 ------------
-You can clone the package into your running julia installation using
+You can clone the package into your running julia 0.5 installation using
 
 ```julia
-Pkg.clone("git://example.com/path/to/Package.jl.git")
+Pkg.clone("https://github.com/OFAI/BayesianNonparametrics.jl.git")
 ```
 
 Documentation
