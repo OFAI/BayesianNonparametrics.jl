@@ -19,7 +19,7 @@ Installation
 You can clone the package into your running julia 0.5 installation using
 
 ```julia
-Pkg.clone("https://github.com/OFAI/BayesianNonparametrics.jl.git")
+Pkg.add("BayesianNonparametrics")
 ```
 
 Documentation
