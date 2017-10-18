@@ -11,7 +11,7 @@ BayesianNonparametrics.jl allows you to
 
 Requirements
 ------------
-* julia version 0.5
+* julia version 0.6
 * packages listed in REQUIREMENTS file
 
 Installation
@@ -24,8 +24,8 @@ Pkg.add("BayesianNonparametrics")
 
 Documentation
 -------------
-Documentation is available on readthedocs: 
-[http://bnpjl.readthedocs.org/en/latest/](http://bnpjl.readthedocs.org/en/latest/)
+Documentation is available in Markdown:
+[documentation](docs/README.md)
 
 Example
 -------
