@@ -2,20 +2,20 @@ export DPM, VCM, HDP
 
 # define models
 
-type DPM <: ModelType
+mutable struct DPM <: ModelType
   H::ConjugatePostDistribution
   α::Float64
 
   DPM(H::ConjugatePostDistribution; α = 1.0) = new(H, α)
 end
 
-type VCM <: ModelType
+mutable struct VCM <: ModelType
   α::Float64
 
   VCM(;α = 1.0) = new(α)
 end
 
-type HDP <: ModelType
+mutable struct HDP <: ModelType
   H::ConjugatePostDistribution
   α::Float64
   γ::Float64
