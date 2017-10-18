@@ -1,7 +1,7 @@
 export DPMHyperparam, DPMData
 
 "Dirichlet Process Mixture Model Hyperparameters"
-immutable DPMHyperparam <: AbstractHyperparam
+struct DPMHyperparam <: AbstractHyperparam
 
   γ_a::Float64
   γ_b::Float64
@@ -12,7 +12,7 @@ immutable DPMHyperparam <: AbstractHyperparam
 end
 
 "Dirichlet Process Mixture Model Data Object"
-type DPMData <: AbstractModelData
+mutable struct DPMData <: AbstractModelData
 
   # Energy
   energy::Float64
@@ -31,7 +31,7 @@ type DPMData <: AbstractModelData
 
 end
 
-type DPMBuffer <: AbstractModelBuffer
+mutable struct DPMBuffer <: AbstractModelBuffer
 
   # ids used for random access
   ids::Array{Int}
@@ -204,7 +204,7 @@ function gibbs!(B::DPMBuffer)
     end
 
     p[B.K + 1] = logpostpred(B.G0, x)[1] + log( B.alpha / (B.N + B.alpha - 1) )
-    p = exp(p - maximum(p))
+    p = exp.(p - maximum(p))
 
     k = randomindex(p)
 

@@ -1,17 +1,17 @@
 export WishartGaussian, GaussianDiagonal, DirichletMultinomial, GammaNormal, NormalNormal, BetaBernoulli, ConjugatePostDistribution
 
-abstract ConjugatePostDistribution
+abstract type ConjugatePostDistribution end
 
-abstract UnivariateConjugatePostDistribution <: ConjugatePostDistribution
-abstract DiscreteUnivariateConjugatePostDistribution <: UnivariateConjugatePostDistribution
-abstract ContinuousUnivariateConjugatePostDistribution <: UnivariateConjugatePostDistribution
+abstract type UnivariateConjugatePostDistribution <: ConjugatePostDistribution end
+abstract type DiscreteUnivariateConjugatePostDistribution <: UnivariateConjugatePostDistribution end
+abstract type ContinuousUnivariateConjugatePostDistribution <: UnivariateConjugatePostDistribution end
 
-abstract MultivariateConjugatePostDistribution <: ConjugatePostDistribution
-abstract DiscreteMultivariateConjugatePostDistribution <: MultivariateConjugatePostDistribution
-abstract ContinuousMultivariateConjugatePostDistribution <: MultivariateConjugatePostDistribution
+abstract type MultivariateConjugatePostDistribution <: ConjugatePostDistribution end
+abstract type DiscreteMultivariateConjugatePostDistribution <: MultivariateConjugatePostDistribution end
+abstract type ContinuousMultivariateConjugatePostDistribution <: MultivariateConjugatePostDistribution end
 
 # Gaussian with Normal Inverse Wishart Prior
-type WishartGaussian <: ContinuousMultivariateConjugatePostDistribution
+mutable struct WishartGaussian <: ContinuousMultivariateConjugatePostDistribution
 
     D::Int
 
@@ -36,12 +36,12 @@ type WishartGaussian <: ContinuousMultivariateConjugatePostDistribution
 end
 
 # Normal with Gamma prior
-type GammaNormal <: ContinuousUnivariateConjugatePostDistribution
+mutable struct GammaNormal <: ContinuousUnivariateConjugatePostDistribution
 
 	# sufficient statistics
 	n::Int
 	sums::Float64
-  ssums::Float64
+    ssums::Float64
 
 	# model parameters
 	μ0::Float64
@@ -56,12 +56,12 @@ type GammaNormal <: ContinuousUnivariateConjugatePostDistribution
 end
 
 # Normal with Normal prior
-type NormalNormal <: ContinuousUnivariateConjugatePostDistribution
+mutable struct NormalNormal <: ContinuousUnivariateConjugatePostDistribution
 
 	# sufficient statistics
 	n::Int
 	sums::Float64
-  ssums::Float64
+    ssums::Float64
 
 	# model parameters
 	μ0::Float64
@@ -74,19 +74,20 @@ type NormalNormal <: ContinuousUnivariateConjugatePostDistribution
 end
 
 # Gaussian with Diagonal Covariance
-type GaussianDiagonal{T <: ContinuousUnivariateConjugatePostDistribution} <: ContinuousMultivariateConjugatePostDistribution
+mutable struct GaussianDiagonal{T <: ContinuousUnivariateConjugatePostDistribution} <: ContinuousMultivariateConjugatePostDistribution
 
     # sufficient statistics
     dists::Vector{T}
 
-    function GaussianDiagonal(dists::Vector{T})
-        new(dists)
-    end
+    # isn't the default constructor sufficient here?
+    #function GaussianDiagonal(dists::Vector{T})
+    #    new(dists)
+    #end
 
 end
 
 # Multinomial with Dirichlet Prior
-type DirichletMultinomial <: DiscreteMultivariateConjugatePostDistribution
+mutable struct DirichletMultinomial <: DiscreteMultivariateConjugatePostDistribution
 
     D::Int
 
@@ -109,11 +110,11 @@ type DirichletMultinomial <: DiscreteMultivariateConjugatePostDistribution
 end
 
 # Bernoulli with Beta Prior
-type BetaBernoulli <: DiscreteUnivariateConjugatePostDistribution
+mutable struct BetaBernoulli <: DiscreteUnivariateConjugatePostDistribution
 
 	# sufficient statistics
 	successes::Int
-  n::Int
+    n::Int
 
 	# beta distribution parameters
 	α0::Float64

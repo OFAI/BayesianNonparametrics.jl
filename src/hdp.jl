@@ -1,7 +1,7 @@
 export HDPHyperparam
 
 "Hierarchical Dirichlet Process Mixture Model Hyperparameters"
-immutable HDPHyperparam <: AbstractHyperparam
+struct HDPHyperparam <: AbstractHyperparam
 
   γ_a::Float64
   γ_b::Float64
@@ -15,7 +15,7 @@ immutable HDPHyperparam <: AbstractHyperparam
 end
 
 "Hierarchical Dirichlet Process Mixture Model Data Object"
-type HDPData <: AbstractModelData
+mutable struct HDPData <: AbstractModelData
 
   # Energy
   energy::Float64
@@ -31,7 +31,7 @@ type HDPData <: AbstractModelData
 
 end
 
-type HDPBuffer{T <: Real} <: AbstractModelBuffer
+mutable struct HDPBuffer{T <: Real} <: AbstractModelBuffer
 
   # samples
   X::Vector{Vector{T}}
