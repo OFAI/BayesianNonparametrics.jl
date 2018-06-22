@@ -1,19 +1,19 @@
 export PrecomputedInitialisation, RandomInitialisation, KMeansInitialisation, IncrementalInitialisation
 
-type PrecomputedInitialisation <: InitialisationType
+mutable struct PrecomputedInitialisation <: InitialisationType
   Z::Array{Int}
   PrecomputedInitialisation(Z::Array{Int}) = new(Z)
 end
 
-type RandomInitialisation <: InitialisationType
+mutable struct RandomInitialisation <: InitialisationType
   k::Int
   RandomInitialisation(;k = 2) = new(k)
 end
 
-type KMeansInitialisation <: InitialisationType
+mutable struct KMeansInitialisation <: InitialisationType
   k::Int
   maxiterations::Int
   KMeansInitialisation(;k = 2, maxiterations = 1000) = new(k, maxiterations)
 end
 
-type IncrementalInitialisation <: InitialisationType end
+mutable struct IncrementalInitialisation <: InitialisationType end

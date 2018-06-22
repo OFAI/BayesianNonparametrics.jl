@@ -1,19 +1,19 @@
 export init, train
 
 "abstract Hyperparameters"
-abstract AbstractHyperparam;
+abstract type AbstractHyperparam end;
 
 "Abstract Model Data Object"
-abstract AbstractModelData;
+abstract type AbstractModelData end;
 
 "Abstract Model Buffer Object"
-abstract AbstractModelBuffer;
+abstract type AbstractModelBuffer end;
 
-abstract ModelType;
+abstract type ModelType end;
 
-abstract InitialisationType;
+abstract type InitialisationType end;
 
-abstract PosteriorInference;
+abstract type PosteriorInference end;
 
 function init(X, model::ModelType, init::InitialisationType)
   throw(ErrorException("Initialisation $(typeof(init)) for $(typeof(model)) using $(typeof(X)) is not available."))

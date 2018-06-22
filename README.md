@@ -9,18 +9,23 @@ BayesianNonparametrics.jl allows you to
 - fit multivariate or univariate distributions for discrete or continous data with conjugate priors
 - compute point estimtates of Dirichlet Process Mixtures posterior samples
 
+Requirements
+------------
+* julia version 0.6
+* packages listed in REQUIREMENTS file
+
 Installation
 ------------
-You can clone the package into your running julia installation using
+You can clone the package into your running julia 0.5 installation using
 
 ```julia
-Pkg.clone("https://github.com/OFAI/BayesianNonparametrics.jl.git")
+Pkg.add("BayesianNonparametrics")
 ```
 
 Documentation
 -------------
-Documentation is available on readthedocs: 
-[http://bnpjl.readthedocs.org/en/latest/](http://bnpjl.readthedocs.org/en/latest/)
+Documentation is available in Markdown:
+[documentation](docs/README.md)
 
 Example
 -------
@@ -114,8 +119,4 @@ maxk = maximum([length(m.weights) for m in models])
 The grouping wich minimizes the lower bound of the variation of information is illustrated in the following image:
 ![alt text](pointestimate.png "Point Estimate")
 
-[![Build Status](https://travis-ci.org/trappmartin/BayesianNonparametrics.jl.svg?branch=master)](https://travis-ci.org/trappmartin/BayesianNonparametrics.jl)
-
-[![Coverage Status](https://coveralls.io/repos/trappmartin/BayesianNonparametrics.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/trappmartin/BayesianNonparametrics.jl?branch=master)
-
-[![codecov.io](http://codecov.io/github/trappmartin/BayesianNonparametrics.jl/coverage.svg?branch=master)](http://codecov.io/github/trappmartin/BayesianNonparametrics.jl?branch=master)
+[![Build Status](https://travis-ci.org/OFAI/BayesianNonparametrics.jl.svg?branch=master)](https://travis-ci.org/OFAI/BayesianNonparametrics.jl)

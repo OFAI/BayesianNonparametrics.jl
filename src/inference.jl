@@ -1,6 +1,6 @@
 export Gibbs, SliceSampler
 
-type Gibbs <: PosteriorInference
+mutable struct Gibbs <: PosteriorInference
         burnin::Int
         thinout::Int
         maxiter::Int
@@ -8,7 +8,7 @@ type Gibbs <: PosteriorInference
         Gibbs(; burnin = 0, thinout = 1, maxiter = 100) = new(burnin, thinout, maxiter)
 end
 
-type SliceSampler <: PosteriorInference
+mutable struct SliceSampler <: PosteriorInference
         burnin::Int
         thinout::Int
         maxiter::Int
