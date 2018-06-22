@@ -38,38 +38,38 @@ end
 # Normal with Gamma prior
 type GammaNormal <: ContinuousUnivariateConjugatePostDistribution
 
-	# sufficient statistics
-	n::Int
-	sums::Float64
-  ssums::Float64
+    # sufficient statistics
+    n::Int
+    sums::Float64
+    ssums::Float64
 
-	# model parameters
-	μ0::Float64
-	λ0::Float64
-	α0::Float64
-	β0::Float64
+    # model parameters
+    μ0::Float64
+    λ0::Float64
+    α0::Float64
+    β0::Float64
 
-	function GammaNormal(;μ0 = 0.0, λ0 = 1.0, α0 = 1.0, β0 = 1.0)
-		new(0, 0.0, 0.0, μ0, λ0, α0, β0)
-	end
+    function GammaNormal(;μ0 = 0.0, λ0 = 1.0, α0 = 1.0, β0 = 1.0)
+        new(0, 0.0, 0.0, μ0, λ0, α0, β0)
+    end
 
 end
 
 # Normal with Normal prior
 type NormalNormal <: ContinuousUnivariateConjugatePostDistribution
 
-	# sufficient statistics
-	n::Int
-	sums::Float64
-  ssums::Float64
+    # sufficient statistics
+    n::Int
+    sums::Float64
+    ssums::Float64
 
-	# model parameters
-	μ0::Float64
-	σ0::Float64
+    # model parameters
+    μ0::Float64
+    σ0::Float64
 
-	function NormalNormal(;μ0 = 0.0, σ0 = 1.0)
-		new(0, 0.0, 0.0, μ0, σ0)
-	end
+    function NormalNormal(;μ0 = 0.0, σ0 = 1.0)
+        new(0, 0.0, 0.0, μ0, σ0)
+    end
 
 end
 
@@ -97,10 +97,31 @@ type DirichletMultinomial <: DiscreteMultivariateConjugatePostDistribution
     # base model parameters
     α0::Float64
 
-  	# cache
-  	dirty::Bool
-  	Z2::Float64
-  	Z3::Array{Float64}
+    # cache
+    dirty::Bool
+    Z2::Float64
+    Z3::Array{Float64}
+
+    function DirichletMultinomial(D::Int, α0::Float64)
+        new(D, 0, sparsevec(zeros(D)), α0, true, 0.0, Array{Float64}(0))
+    end
+
+end
+
+# Categorical with Dirichlet Prior
+type DirichletCategorical <: DiscreteUnivariateConjugatePostDistribution
+
+    # sufficient statistics
+    n::Int
+    counts::SparseMatrixCSC{Int,Int}
+
+    # base model parameters
+    α0::Float64
+
+    # cache
+    dirty::Bool
+    Z2::Float64
+    Z3::Array{Float64}
 
     function DirichletMultinomial(D::Int, α0::Float64)
         new(D, 0, sparsevec(zeros(D)), α0, true, 0.0, Array{Float64}(0))
@@ -111,16 +132,16 @@ end
 # Bernoulli with Beta Prior
 type BetaBernoulli <: DiscreteUnivariateConjugatePostDistribution
 
-	# sufficient statistics
-	successes::Int
-  n::Int
+    # sufficient statistics
+    successes::Int
+    n::Int
 
-	# beta distribution parameters
-	α0::Float64
-	β0::Float64
+    # beta distribution parameters
+    α0::Float64
+    β0::Float64
 
-	function BetaBernoulli(;α0 = 1.0, β0 = 1.0)
-		new(0, 0, α0, β0)
-	end
+    function BetaBernoulli(;α0 = 1.0, β0 = 1.0)
+        new(0, 0, α0, β0)
+    end
 
 end
