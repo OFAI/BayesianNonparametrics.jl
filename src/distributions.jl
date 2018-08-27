@@ -110,7 +110,7 @@ mutable struct DirichletMultinomial <: DiscreteMultivariateConjugatePostDistribu
 end
 
 # Categorical with Dirichlet Prior
-type DirichletCategorical <: DiscreteUnivariateConjugatePostDistribution
+mutable struct DirichletCategorical <: DiscreteUnivariateConjugatePostDistribution
 
     # sufficient statistics
     n::Int

@@ -81,7 +81,7 @@ end
 
 
 "HDP initialization using random assignments."
-function init{T <: Real}(X::Vector{Vector{T}}, model::HDP, init::RandomInitialisation)
+function init(X::Vector{Vector{T}}, model::HDP, init::RandomInitialisation) where T <: Real
 
     Z = Vector{Vector{Int}}(length(X))
     G = ConjugatePostDistribution[]
@@ -235,7 +235,7 @@ function gibbs!(B::HDPBuffer)
     B
 end
 
-function updateenergy!{T <: Real}(B::HDPData, X::Vector{Vector{T}})
+function updateenergy!(B::HDPData, X::Vector{Vector{T}}) where T <: Real
 
   E = 0
   numl = 0
