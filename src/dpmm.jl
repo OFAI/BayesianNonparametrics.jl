@@ -67,7 +67,7 @@ mutable struct DPMBuffer <: AbstractModelBuffer
   alpha::Float64
 end
 
-function init{T <: Real}(X::AbstractArray{T}, model::DPM, init::KMeansInitialisation)
+function init(X::AbstractArray{T}, model::DPM, init::KMeansInitialisation) where T <: Real
 
   (N, D) = size(X)
 
@@ -121,7 +121,7 @@ function init{T <: Real}(X::AbstractArray{T}, model::DPM, init::KMeansInitialisa
     model.α)
 end
 
-function init{T <: Real}(X::AbstractArray{T}, model::DPM, init::RandomInitialisation)
+function init(X::AbstractArray{T}, model::DPM, init::RandomInitialisation) where T <: Real
 
   (N, D) = size(X)
 
