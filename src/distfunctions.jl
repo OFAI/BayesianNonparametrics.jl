@@ -205,7 +205,7 @@ function posteriorParameters(d::WishartGaussian)
 		sample_mu = d.sums / d.n
 
 		# make sure values are not NaN
-		sample_mu[sample_mu .!= sample_mu] = 0
+		sample_mu[sample_mu .!= sample_mu] .= 0
 
 		# compute posterior parameters
 		κ = d.κ0 + d.n

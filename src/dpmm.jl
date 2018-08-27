@@ -73,19 +73,19 @@ function init(X::AbstractArray{T}, model::DPM, init::KMeansInitialisation) where
 
 	if issparse(X)
     if !(T == Float64)
-		  R = Clustering.kmeans(float(full(X')), init.k; maxiter = init.maxiterations)
+      R = Clustering.kmeans(convert(Matrix, float(full(X'))), init.k; maxiter = init.maxiterations)
     else
-      R = Clustering.kmeans(full(X'), init.k; maxiter = init.maxiterations)
+      R = Clustering.kmeans(convert(Matrix, full(X')), init.k; maxiter = init.maxiterations)
     end
 	else
-		R = Clustering.kmeans(X', init.k; maxiter = init.maxiterations)
+    R = Clustering.kmeans(convert(Matrix,X'), init.k; maxiter = init.maxiterations)
 	end
 
   Z = assignments(R)
-  G = Array{ConjugatePostDistribution}(init.k)
+  G = Array{ConjugatePostDistribution}(undef, init.k)
 
   for c in 1:init.k
-    idx = find(Z .== c)
+    idx = findall(Z .== c)
 
     if length(idx) > 0
       G[c] = add(model.H, X[idx,:])
@@ -100,7 +100,7 @@ function init(X::AbstractArray{T}, model::DPM, init::KMeansInitialisation) where
   end
 
   K = init.k
-  for k in sort(find(C .== 0), rev = true)
+  for k in sort(findall(C .== 0), rev = true)
     deleteat!(G, k)
     Z[Z .> k] -= 1
     deleteat!(C, k)
@@ -130,7 +130,7 @@ function init(X::AbstractArray{T}, model::DPM, init::RandomInitialisation) where
   G = Array{ConjugatePostDistribution}(init.k)
 
   for c in 1:init.k
-    idx = find(Z .== c)
+    idx = findall(Z .== c)
 
     if length(idx) > 0
       G[c] = add(model.H, X[idx,:])
@@ -183,7 +183,7 @@ function gibbs!(B::DPMBuffer)
     # udpate number of active clusters if necessary
     if B.C[z] < 1
       deleteat!(B.G, z)
-      B.Z[B.Z .> z] -= 1
+      B.Z[B.Z .> z] .-= 1
       deleteat!(B.C, z)
       B.K -= 1
     end
@@ -204,7 +204,7 @@ function gibbs!(B::DPMBuffer)
     end
 
     p[B.K + 1] = logpostpred(B.G0, x)[1] + log( B.alpha / (B.N + B.alpha - 1) )
-    p = exp.(p - maximum(p))
+    p = exp.(p .- maximum(p))
 
     k = randomindex(p)
 
@@ -277,7 +277,7 @@ function slicemap(i::Int, uu::Float64, ii::Int, π::Vector{Float64}, Zi::Int, Xi
 		ui = rand(Uniform(uu, π[Zi]))
 	end
 
-	di = find(π .>= ui)
+	di = findall(π .>= ui)
 	p = [logpostpred(G[d], Xi)[1] for d in filter(d -> d <= K, di)]
 	if any(di .> K)
 		push!(p, logpostpred(G0, Xi)[1])
@@ -293,10 +293,10 @@ function slicesampling!(B::DPMBuffer)
 	b = [rand(Beta(1, n[k])) for k in 1:B.K]
 	u = π[1:end-1].*b
 	(uu, kk) = findmin(u)
-	ii = rand(find(B.Z .== kk))
+	ii = rand(findall(B.Z .== kk))
 
 	# collect slices
-	suffstat = @parallel (vcat) for i in 1:B.N
+	suffstat = @distributed (vcat) for i in 1:B.N
 		slicemap(i, uu, ii, π, B.Z[i], view(B.X, i, :), B.G, B.G0, B.K)
 	end
 

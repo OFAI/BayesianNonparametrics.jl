@@ -2,7 +2,11 @@ __precompile__(true)
 
 module BayesianNonparametrics
 
-  using Distributions, Combinatorics, Clustering, ProgressMeter, StatsFuns
+  using Distributions#, Combinatorics, 
+  using Clustering, ProgressMeter, StatsFuns
+  
+  # include Base modules
+  using SparseArrays, Distributed, LinearAlgebra, Random
 
   include("common.jl")
   include("math.jl")

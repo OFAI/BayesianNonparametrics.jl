@@ -97,7 +97,7 @@ function randnumtable(weights::Array{Float64}, table::Array{Int})
             stirnums = map( x -> abs(stirlings1(max, x)), m)
             stirnums /= maximum(stirnums)
 
-            for (idx, j) in enumerate(find(table .== max))
+            for (idx, j) in enumerate(findall(table .== max))
 
                 clike = m .* w[idx]
                 clike = cumsum(stirnums .* exp(clike - maximum(clike)))

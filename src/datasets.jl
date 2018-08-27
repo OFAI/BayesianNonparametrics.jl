@@ -11,7 +11,7 @@ function bloobs(;centers = 3, samples = 100, randomize = true)
       samplespcenter[i] += 1
   end
 
-  X = reduce(hcat, [rand(MvNormal(ones(2) .* μ[i], eye(2) .* Σ[i]), samplespcenter[i]) for i in 1:centers])'
+  X = reduce(hcat, [rand(MvNormal(ones(2) .* μ[i], Matrix(I, 2, 2) .* Σ[i]), samplespcenter[i]) for i in 1:centers])'
   Y = reduce(vcat, [ones(Int, samplespcenter[i]) * i for i in 1:centers])
 
   ids = collect(1:size(X, 1))

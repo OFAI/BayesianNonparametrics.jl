@@ -93,7 +93,7 @@ function init(X::Vector{Vector{T}}, model::HDP, init::RandomInitialisation) wher
       Z[i] = rand(1:K, N)
 
       for c in 1:K
-        idx = find(Z[i] .== c)
+        idx = findall(Z[i] .== c)
         if length(idx) > 0
           if size(G, 1) < c
             push!(G, add(model.H, X[i][idx]))
