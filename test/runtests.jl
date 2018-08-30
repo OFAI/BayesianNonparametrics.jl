@@ -1,5 +1,5 @@
 using BayesianNonparametrics
-using Base.Test
+using Test
 using Distributions
 
 # write your own tests here

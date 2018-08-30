@@ -127,7 +127,7 @@ function init(X::AbstractArray{T}, model::DPM, init::RandomInitialisation) where
 
   Z = rand(1:init.k, N)
 
-  G = Array{ConjugatePostDistribution}(init.k)
+  G = Array{ConjugatePostDistribution}(undef, init.k)
 
   for c in 1:init.k
     idx = findall(Z .== c)
