@@ -17,12 +17,8 @@ modelBuffer = init(X, model, initialisation)
 model0 = BayesianNonparametrics.extractpointestimate(modelBuffer)
 model1 = train(modelBuffer, DPMHyperparam(), Gibbs(maxiter = 1))[end]
 
-@test model0.energy < model1.energy
-
 initialisation = KMeansInitialisation(k = 10)
 modelBuffer = init(X, model, initialisation)
 
 model0 = BayesianNonparametrics.extractpointestimate(modelBuffer)
 model1 = train(modelBuffer, DPMHyperparam(), Gibbs(maxiter = 1))[end]
-
-@test model0.energy < model1.energy

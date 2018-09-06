@@ -211,8 +211,8 @@ function gibbs!(B::DPMBuffer)
     if k > length(B.G)
       # add new cluster
       Gk = add(B.G0, x)
-      B.G = cat(1, B.G, Gk)
-      B.C = cat(1, B.C, 0)
+      B.G = vcat(B.G, Gk)
+      B.C = vcat(B.C, 0)
     else
       # add to cluster
       add!(B.G[k], x)
@@ -234,7 +234,7 @@ end
 "Compute Energy of model for given data"
 function updateenergy!(B::DPMData, X::AbstractArray)
 
-  E = 0.00001
+  E = eps() * 10^10
 
   for xi in 1:size(X, 1)
 

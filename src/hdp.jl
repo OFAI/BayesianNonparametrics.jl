@@ -203,12 +203,12 @@ function gibbs!(B::HDPBuffer)
             if c > B.K
                 # create new cluster
                 B.K += 1
-                B.G = cat(1, B.G, deepcopy(B.G0))
+                B.G = vcat(B.G, deepcopy(B.G0))
                 b = rand(Dirichlet([1, B.γ]))
                 b = b * B.β[end]
-                B.β = cat(1, B.β, 1)
+                B.β = vcat(B.β, 1)
                 B.β[end-1:end] = b
-                B.C = cat(1, B.C, zeros(Int, 1, B.N0))
+                B.C = vcat(B.C, zeros(Int, 1, B.N0))
                 prob = zeros(B.K + 1) * -Inf
             end
 
@@ -221,7 +221,7 @@ function gibbs!(B::HDPBuffer)
 
     # sample number of tables
     kk = maximum([0, B.K - length(B.totalnt)])
-    B.totalnt = cat(2, B.totalnt - sum(B.classnt, 1), zeros(Int, 1, kk))
+    B.totalnt = hcat(B.totalnt - sum(B.classnt, 1), zeros(Int, 1, kk))
     B.classnt = randnumtable(B.α .* B.β[:,ones(Int, B.N0)]', B.C')
     B.totalnt = B.totalnt + sum(B.classnt, 1)
 

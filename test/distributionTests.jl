@@ -65,7 +65,7 @@ using LinearAlgebra
     N = length(x)
 
     # distribution
-    d = GammaNormal(μ0, λ0, α0, β0)
+    d = GammaNormal(μ0 = μ0, λ0 = λ0, α0 = α0, β0 = β0)
 
     # test prior
     (μ, λ, α, β) = BayesianNonparametrics.posteriorParameters(d)
@@ -79,13 +79,14 @@ using LinearAlgebra
     BayesianNonparametrics.add!(d, x)
 
     # test posterior paramters
+    # see: https://www.cs.ubc.ca/~murphyk/Papers/bayesGauss.pdf page 8.
     (μ, λ, α, β) = BayesianNonparametrics.posteriorParameters(d)
 
-    #@test μ ==    
     @test λ == λ0 + N
-    @test α = α0 + (N / 2)
-    #@test β == 
-
+    @test α == α0 + (N / 2)
+    @test μ == (λ0 * μ0 + N * mean(x)) / (λ0 + N)
+    @test β == β0 + 1/2 * sum( (x .- mean(x)).^2 ) + ( λ0 * N * (mean(x) - μ0)^2 ) / (2 * λ)
+    
     # remove data
     BayesianNonparametrics.remove!(d, x)
 
