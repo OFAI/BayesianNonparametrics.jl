@@ -99,4 +99,42 @@ using LinearAlgebra
     @test β == β0
   end
 
+  @testset "Beta-Bernoulli" begin
+    
+    # prior
+    α0 = 1.0
+    β0 = 1.0
+
+    # data
+    x = Bool[0, 1, 0, 0, 1]
+    N = length(x)
+
+    # distribution
+    d = BetaBernoulli(α0 = α0, β0 = β0)
+
+    # test prior
+    (α, β) = BayesianNonparametrics.posteriorParameters(d)
+
+    @test α == α0
+    @test β == β0
+
+    # add data
+    BayesianNonparametrics.add!(d, x)
+
+    # test posterior paramters
+    (α, β) = BayesianNonparametrics.posteriorParameters(d)
+
+    @test α == α0 + sum(x)
+    @test β == β0 + (N - sum(x)) 
+
+    # remove data
+    BayesianNonparametrics.remove!(d, x)
+
+    # test prior
+    (α, β) = BayesianNonparametrics.posteriorParameters(d)
+
+    @test α == α0
+    @test β == β0
+  end
+
 end

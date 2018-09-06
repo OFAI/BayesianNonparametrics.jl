@@ -85,7 +85,7 @@ function add!(d::DirichletMultinomial, X::SparseVector{Int, Int})
     d.dirty = true
 end
 
-function add!(d::BetaBernoulli, X::Integer)
+function add!(d::BetaBernoulli, X::Bool)
 	d.successes += X
 	d.n += 1
 end
@@ -261,8 +261,8 @@ function posteriorParameters(d::NormalNormal)
 end
 
 function posteriorParameters(d::BetaBernoulli)
-	α = d.α + d.successes
-	β = d.β + d.n - d.successes
+	α = d.α0 + d.successes
+	β = d.β0 + d.n - d.successes
 	return (α, β)
 end
 
