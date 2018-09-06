@@ -12,9 +12,8 @@ BayesianNonparametrics.jl
 - fit multivariate or univariate distributions for discrete or continous data with conjugate priors
 - compute point estimtates of Dirichlet Process Mixtures posterior samples
 
-Requirements
-------------
-* julia version 0.7 or higher
+#### News
+*BayesianNonparametrics* is Julia 0.7  / 1.0 compatible
 
 Installation
 ------------
@@ -48,7 +47,7 @@ we can generate a 2D synthetic dataset (or use a multivariate continuous dataset
 and construct the parameters of our base distribution:
 
 ```julia
-μ0 = vec(mean(X, 1))
+μ0 = vec(mean(X, dims = 1))
 κ0 = 5.0
 ν0 = 9.0
 Σ0 = cov(X)
@@ -76,19 +75,19 @@ models = train(modelBuffer, DPMHyperparam(), Gibbs(maxiter = 500))
 You shoud see the progress of the sampling process in the command line. After applying Gibbs sampling, it is possible explore the posterior based on their posterior densities,
 
 ```julia
-densities = Float64[m.energy for m in models]
+densities = map(m -> m.energy, models)
 ```
 
 number of active components
 
 ```julia
-activeComponents = Int[sum(m.weights .> 0) for m in models]
+activeComponents = map(m -> sum(m.weights .> 0), models)
 ```
 
 or the groupings of the observations:
 
 ```julia
-assignments = [m.assignments for m in models]
+assignments = map(m -> m.assignments, models)
 ```
 
 The following animation illustrates posterior samples obtained by a Dirichlet Process Mixture: 
@@ -113,8 +112,8 @@ end
 and find the optimal partition which minimizes the lower bound of the variation of information:
 
 ```julia
-mink = minimum([length(m.weights) for m in models])
-maxk = maximum([length(m.weights) for m in models])
+mink = minimum(length(m.weights) for m in models)
+maxk = maximum(length(m.weights) for m in models)
 (peassignments, _) = pointestimate(PSM, method = :average, mink = mink, maxk = maxk)
 ```
 
