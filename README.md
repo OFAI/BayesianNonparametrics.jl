@@ -15,7 +15,6 @@ BayesianNonparametrics.jl
 Requirements
 ------------
 * julia version 0.7 or higher
-* packages listed in REQUIREMENTS file
 
 Installation
 ------------
